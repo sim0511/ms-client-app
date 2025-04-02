@@ -1,0 +1,29 @@
+import CompleteAssignmentScreen from '../screens/CompleteAssignmentScreen';
+import EmployeeTabs from './EmployeeTabs';
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+export default function EmployeeNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="EmployeeTabs"
+        component={EmployeeTabs}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CompleteAssignment"
+        component={CompleteAssignmentScreen}
+        options={{
+          title: 'Complete Assignment',
+          headerBackTitleVisible: false,
+          headerStyle: { backgroundColor: '#6200ee' },
+          headerTintColor: '#fff',
+          headerTitleAlign: 'center',
+        }}
+      />
+    </Stack.Navigator>
+  );
+}

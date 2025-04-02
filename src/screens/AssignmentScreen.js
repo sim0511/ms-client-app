@@ -1,26 +1,34 @@
-import { ActivityIndicator, Badge, Button, Card, Text, Title } from 'react-native-paper';
-import React, { useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Badge,
+  Button,
+  Card,
+  Text,
+  Title,
+} from "react-native-paper";
+import React, { useEffect, useState } from "react";
+import { RefreshControl, ScrollView, View } from "react-native";
 
-import axios from 'axios';
+import axios from "axios";
+import { useNavigation } from '@react-navigation/native';
 
 export default function AssignmentScreen() {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const userId = '67e1b5596547b8be3fb76b97'; // change it with some context or storage
-
+  const userId = "67e1b5596547b8be3fb76b97"; // change it with some context or storage
+  const navigation = useNavigation();
   const fetchAssignments = async () => {
     try {
       const res = await axios.get(
-        'http://192.168.1.101:5000/api/v1/assignments/me',
+        "http://192.168.1.101:5000/api/v1/assignments/me",
         { params: { userId } }
       );
-      console.log(res.data)
+      console.log(res.data);
       setAssignments(res.data.data);
     } catch (err) {
-      console.log('Error fetching tasks:', err);
+      console.log("Error fetching tasks:", err);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -33,7 +41,7 @@ export default function AssignmentScreen() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center" }}>
         <ActivityIndicator animating={true} size="large" />
       </View>
     );
@@ -42,7 +50,9 @@ export default function AssignmentScreen() {
   return (
     <ScrollView
       contentContainerStyle={{ padding: 16 }}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchAssignments} />}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchAssignments} />
+      }
     >
       {assignments.map((item) => {
         const task = item.taskId;
@@ -52,13 +62,22 @@ export default function AssignmentScreen() {
             <Card.Content>
               <Title>{task.taskName}</Title>
               <Text>Area: {task.area}</Text>
-              <Text>Due: {item.dueDate?.split('T')[0]}</Text>
-              <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center' }}>
+              <Text>Due: {item.dueDate?.split("T")[0]}</Text>
+              <View
+                style={{
+                  marginTop: 8,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
                 <Text>Status: </Text>
                 <Badge
-                  style={{ backgroundColor: item.completed ? 'green' : 'orange', color: 'white' }}
+                  style={{
+                    backgroundColor: item.completed ? "green" : "orange",
+                    color: "white",
+                  }}
                 >
-                  {item.completed ? 'Completed' : 'Pending'}
+                  {item.completed ? "Completed" : "Pending"}
                 </Badge>
               </View>
             </Card.Content>
@@ -66,7 +85,17 @@ export default function AssignmentScreen() {
             {!item.completed && (
               <Card.Actions>
                 <Button onPress={() => {}}>Mark as Completed</Button>
-                <Button onPress={() => {}}>Upload Photo</Button>
+                <Button
+                  onPress={() =>
+                    navigation.navigate("CompleteAssignment", {
+                      assignmentId: item._id,
+                      taskName: task.taskName,
+                      dueDate: item.dueDate,
+                    })
+                  }
+                >
+                  Upload Photo
+                </Button>
               </Card.Actions>
             )}
           </Card>

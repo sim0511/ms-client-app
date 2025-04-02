@@ -16,7 +16,7 @@ export default function EmployeeTabs() {
       headerTitleAlign: 'center',
       tabBarActiveTintColor: '#6200ee',
     }}>
-      <Tab.Screen name="Assignments" component={AssignmentScreen} />
+      <Tab.Screen name="Assignments" component={AssignmentScreen}   />
       <Tab.Screen name="Profile" component={ProfileScreen} />
       <Tab.Screen name="Schedule" component={ScheduleScreen} />
     </Tab.Navigator>

@@ -19,7 +19,7 @@ export default function LoginScreen({ setUser }) {
       });
       if (res.status === 200) {
         // Fetch user info separately if needed
-        const userRes = await axios.get(`http://192.168.1.101:5000/api/v1/${username}`);
+        const userRes = await axios.get(`http://192.168.1.101:5000/api/v1/user/${username}`);
         setUser(userRes.data); // sends to AppNavigator
       }
     } catch (err) {
