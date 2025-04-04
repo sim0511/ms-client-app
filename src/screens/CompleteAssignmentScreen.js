@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 
 import axios from 'axios';
 
-const IP = 'http://192.168.1.101:5000'; // Update with your backend IP
+const IP = 'https://api.simrandev.com';
 
 export default function CompleteAssignmentScreen({ route, navigation }) {
   const { assignmentId, taskName, dueDate } = route.params;
@@ -14,10 +14,8 @@ export default function CompleteAssignmentScreen({ route, navigation }) {
     setLoading(true);
     try {
       await axios.post(`${IP}/api/v1/assignments/complete`, {
-        assignmentId,
-        completed: true,
+        assignmentId
       });
-
       Alert.alert('Success', 'Task marked as completed!');
       navigation.goBack();
     } catch (err) {
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 20,
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'flex-start', // 👈 this moves content to the top
+    justifyContent: 'flex-start', 
   },
   info: {
     fontSize: 16,

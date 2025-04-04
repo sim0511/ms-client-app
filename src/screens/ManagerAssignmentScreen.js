@@ -4,8 +4,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import axios from 'axios';
 
-const IP = 'http://192.168.1.101:5000'; // Update if needed
-
+const IP = 'https://api.simrandev.com';
 export default function ManagerAssignmentsScreen() {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,3 +1,6 @@
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+
 import {
   ActivityIndicator,
   Badge,
@@ -6,24 +9,25 @@ import {
   Text,
   Title,
 } from "react-native-paper";
+import { Alert, RefreshControl, ScrollView, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
 
 import axios from "axios";
 import { useNavigation } from '@react-navigation/native';
 
-export default function AssignmentScreen() {
+export default function AssignmentScreen({user}) {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const userId = "67e1b5596547b8be3fb76b97"; // change it with some context or storage
   const navigation = useNavigation();
+
+  const IP = `https://api.simrandev.com`;
   const fetchAssignments = async () => {
     try {
       const res = await axios.get(
-        "http://192.168.1.101:5000/api/v1/assignments/me",
-        { params: { userId } }
+        `${IP}/api/v1/assignments/me`,
+        { params: { userId:user?.userId } }
       );
       console.log(res.data);
       setAssignments(res.data.data);
@@ -34,7 +38,7 @@ export default function AssignmentScreen() {
       setRefreshing(false);
     }
   };
-
+  
   useEffect(() => {
     fetchAssignments();
   }, []);
@@ -47,6 +51,54 @@ export default function AssignmentScreen() {
     );
   }
 
+  const handleUploadPhoto = async (assignmentId) => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        base64: true,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.7,
+      });
+
+      if (result.canceled) return;
+
+      const base64Image = result.assets[0].base64;
+      const fileUri = result.assets[0].uri;
+      const extension = fileUri.split('.').pop();
+
+      const imageData = `data:image/${extension};base64,${base64Image}`;
+
+      
+      const uploadRes = await axios.post(`${IP}/api/v1/assignments/upload-photo`, {
+        base64Image: imageData,
+        assignmentId
+      });
+
+
+      Alert.alert("Success", "Photo uploaded");
+      fetchAssignments(); 
+    } catch (err) {
+      console.log(err);
+      Alert.alert("Error", "Something went wrong");
+    }
+  };
+  
+  const handleMarkAsCompleted = async (assignmentId) => {
+    try {
+      await axios.post(`${IP}/api/v1/assignments/complete`, {
+        assignmentId,
+        completed: true,
+      });
+  
+      
+      console.log("Marked as completed");
+     
+      fetchAssignments();
+    } catch (err) {
+      console.log("Error marking as completed:", err.message);
+    }
+  };
+
+  
   return (
     <ScrollView
       contentContainerStyle={{ padding: 16 }}
@@ -81,17 +133,18 @@ export default function AssignmentScreen() {
                 </Badge>
               </View>
             </Card.Content>
-
+                   {item.photoUrl && (
+      <Card.Cover 
+        source={{ uri: item.photoUrl }} 
+        style={{ marginTop: 10, borderRadius: 8 }} 
+        resizeMode="cover"
+      />
+    )}
             {!item.completed && (
               <Card.Actions>
-                <Button onPress={() => {}}>Mark as Completed</Button>
+                <Button onPress={() => handleMarkAsCompleted(item._id)}>Mark as Completed</Button>
                 <Button
-                  onPress={() =>
-                    navigation.navigate("CompleteAssignment", {
-                      assignmentId: item._id,
-                      taskName: task.taskName,
-                      dueDate: item.dueDate,
-                    })
+                  onPress={() => handleUploadPhoto(item._id)
                   }
                 >
                   Upload Photo

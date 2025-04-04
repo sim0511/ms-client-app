@@ -32,7 +32,7 @@ export default function AssignTaskScreen() {
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const IP = 'http://192.168.1.101:5000'; // 🔁 Replace with your actual IP
+  const IP = 'https://api.simrandev.com'; 
 
   // console.log(DropDown);
   const fetchData = async () => {
@@ -144,7 +144,7 @@ export default function AssignTaskScreen() {
   <DateTimePicker
     value={dueDate}
     mode="date"
-    display={Platform.OS === 'ios' ? 'inline' : 'calendar'} // 'calendar' looks best on Android
+    display={Platform.OS === 'ios' ? 'inline' : 'calendar'} 
     onChange={(event, selectedDate) => {
       setShowDatePicker(false);
       if (selectedDate) {

@@ -5,14 +5,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-export default function EmployeeNavigator() {
+export default function EmployeeNavigator({user,setUser}) {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="EmployeeTabs"
-        component={EmployeeTabs}
         options={{ headerShown: false }}
-      />
+      >
+                {(props) => <EmployeeTabs {...props} user={user} setUser={setUser} />}
+      </Stack.Screen>
       <Stack.Screen
         name="CompleteAssignment"
         component={CompleteAssignmentScreen}

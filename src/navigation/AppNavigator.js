@@ -5,7 +5,7 @@ import CompleteAssignmentScreen from '../screens/CompleteAssignmentScreen';
 import EmployeeNavigator from './EmployeeNavigator';
 import EmployeeTabs from './EmployeeTabs';
 import LoginScreen from '../screens/LoginScreen';
-import ManagerDashboard from '../screens/AssignTaskScreen'; // 👈 rename here
+import ManagerDashboard from '../screens/AssignTaskScreen';
 import ManagerTabs from './ManagerTabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -21,11 +21,13 @@ export default function AppNavigator() {
           {(props) => <LoginScreen {...props} setUser={setUser} />}
         </Stack.Screen>
       ) : user.role === 'employee' ? (
-        <Stack.Screen name="EmployeeStack" component={EmployeeNavigator} />        
+        <Stack.Screen name="EmployeeStack">
+          {(props) => <EmployeeNavigator {...props} user={user} setUser={setUser} />}
+        </Stack.Screen>        
       ) : user.role === 'manager' ? (
         <Stack.Screen 
           name="ManagerDashboard" 
-          component={ManagerTabs}
+          
           options={{
           headerShown: true,
           // title: 'Assign Task',
@@ -34,8 +36,10 @@ export default function AppNavigator() {
           },
           headerTintColor: '#fff',
           headerTitleAlign: 'center',
-              headerBackTitleVisible: false, // hides "Back" text on iOS
-        }}/>
+              headerBackTitleVisible: false, 
+        }}>
+          {(props) => <ManagerTabs {...props} user={user} setUser={setUser} />}
+        </Stack.Screen>
           
       ) : (
         <Stack.Screen name="AdminDashboard" component={AdminDashboard} />
